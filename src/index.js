@@ -17,16 +17,15 @@ class Board extends React.Component {
     super(props);
     this.state = {
       squares: Array(9).fill(null),
+      xIsNext: true,
     };
   }
 
   handleClick(i) {
-    console.log(this.state);
-
     const squares = this.state.squares.slice();
-    squares[i] = "X";
-    console.log(squares[i]);
-    this.setState({ squares: squares });
+    squares[i] = this.state.xIsNext ? "X" : "0";
+    console.log(this.state.xIsNext);
+    this.setState({ squares: squares, xIsNext: !this.state.xIsNext }); // it all the time changes current state to opposite
   }
 
   renderSquare(i) {
@@ -64,14 +63,12 @@ class Board extends React.Component {
   }
 }
 
-class Square extends React.Component {
-  render() {
-    return (
-      <button className="square" onClick={() => this.props.onClick()}>
-        {this.props.value}
-      </button>
-    );
-  }
+function Square(props) {
+  return (
+    <button className="square" onClick={props.onClick}>
+      {props.value}
+    </button>
+  );
 }
 
 class Game extends React.Component {
