@@ -3,22 +3,11 @@ import ReactDOM from "react-dom";
 import "./index.css";
 
 class Board extends React.Component {
-  // handleClick(i) {
-  //   const squares = this.state.squares.slice();
-  //   if (calculateWinner(squares) || squares[i]) {
-  //     // if we defined a winner we go out of the game. Otherwise - we got some state, we set the corresponding value to xIsNext, invert current state, and wait for the next click.
-  //     return;
-  //   }
-
-  //   squares[i] = this.state.xIsNext ? "X" : "0";
-  //   this.setState({ squares: squares, xIsNext: !this.state.xIsNext }); // it all the time changes current state to opposite
-  // }
-
   renderSquare(i) {
     return (
       <Square
-        value={this.props.squares[i]}
-        onClick={() => this.props.onClick(i)} // props
+        value={this.props.squares[i]} // Board needs get props squares and onClick from Game component
+        onClick={() => this.props.onClick(i)} //  our Board component no longer stores  handleClick(i), We moved it to Game.
       />
     );
   }
@@ -62,27 +51,30 @@ class Game extends React.Component {
       xIsNext: true,
     };
   }
+
   handleClick(i) {
     const history = this.state.history;
     const current = history[history.length - 1];
-    const squares = current.squares.slice();
+    const squares = current.squares.slice(); // copy of state after last move (array[]) / copy of last state
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
     squares[i] = this.state.xIsNext ? "X" : "0";
     this.setState({
-      history: history.concat([{ squares: squares }]),
+      history: history.concat([{ squares: squares }]), // squares: squares - we assigned squares copy of last state
       xIsNext: !this.state.xIsNext,
     }); // it all the time changes current state to opposite
   }
 
   render() {
     const history = this.state.history;
-    const current = history[history.length - 1];
-    const winner = calculateWinner(current.squares);
+    const current = history[history.length - 1]; //last move
+    const winner = calculateWinner(current.squares); // it is the same as current. why we accsess a squares?
+    console.log(current);
+
     let status;
     if (winner) {
-      status = "Won" + winner;
+      status = "Won " + winner;
     } else {
       status = "Next player: " + (this.state.xIsNext ? "X" : "0");
     }
